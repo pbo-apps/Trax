@@ -79,7 +79,7 @@ class GPXViewController: UIViewController, MKMapViewDelegate {
         if control == view.leftCalloutAccessoryView {
             performSegue(withIdentifier: Constants.ShowImageSegueIdentifier, sender: view)
         } else if control == view.rightCalloutAccessoryView {
-            performSegue(withIdentifier: Constants.EditUserWaypoint, sender: view)
+            performSegue(withIdentifier: Constants.EditUserWaypointSegueIdentifier, sender: view)
         }
     }
     
@@ -97,6 +97,11 @@ class GPXViewController: UIViewController, MKMapViewDelegate {
             if let ivc = destination as? ImageViewController {
                 ivc.imageURL = waypoint?.imageUrl
                 ivc.title = waypoint?.name
+            }
+        } else if segue.identifier == Constants.EditUserWaypointSegueIdentifier {
+            if let editableWaypoint = waypoint as? EditableWaypoint,
+                let ewvc = destination as? EditWaypointViewController {
+                ewvc.waypointToEdit = editableWaypoint
             }
         }
     }
@@ -123,7 +128,7 @@ class GPXViewController: UIViewController, MKMapViewDelegate {
         static let LeftCalloutFram = CGRect(x: 0, y: 0, width: 59, height: 59)
         static let AnnotationViewReuseIdentifier = "Waypoint"
         static let ShowImageSegueIdentifier = "Show Image"
-        static let EditUserWaypoint = "Edit Waypoint"
+        static let EditUserWaypointSegueIdentifier = "Edit Waypoint"
     }
 
 }
