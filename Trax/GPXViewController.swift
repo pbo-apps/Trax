@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  GPXViewController.swift
 //  Trax
 //
 //  Created by Pete Bounford on 03/03/2017.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class GPXViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
