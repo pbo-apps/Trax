@@ -55,10 +55,15 @@ class GPXViewController: UIViewController, MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         if let thumbnailImageButton = view.leftCalloutAccessoryView as? UIButton,
-            let url = (view.annotation as? GPX.Waypoint)?.thumbnailUrl,
-            let imageData = NSData(contentsOf: url), // blocks main queue!!!
-            let image = UIImage(data: imageData as Data) {
-            thumbnailImageButton.setImage(image, for: .normal)
+            let url = (view.annotation as? GPX.Waypoint)?.thumbnailUrl {
+            DispatchQueue.global(qos: DispatchQoS.QoSClass.userInitiated).async {
+                if let imageData = NSData(contentsOf: url),
+                    let image = UIImage(data: imageData as Data) {
+                    DispatchQueue.main.async {
+                        thumbnailImageButton.setImage(image, for: .normal)
+                    }
+                }
+            }
         }
     }
     
