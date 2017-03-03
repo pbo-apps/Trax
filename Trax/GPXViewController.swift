@@ -44,12 +44,20 @@ class GPXViewController: UIViewController, MKMapViewDelegate {
         } else {
             view.annotation = annotation
         }
+        
+        view.isDraggable = annotation is EditableWaypoint
         view.leftCalloutAccessoryView = nil
+        view.rightCalloutAccessoryView = nil
+        
         if let waypoint = annotation as? GPX.Waypoint {
             if waypoint.thumbnailUrl != nil {
                 view.leftCalloutAccessoryView = UIButton(frame: Constants.LeftCalloutFram)
             }
+            if waypoint is EditableWaypoint {
+                view.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
+            }
         }
+        
         return view
     }
     
@@ -70,6 +78,8 @@ class GPXViewController: UIViewController, MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         if control == view.leftCalloutAccessoryView {
             performSegue(withIdentifier: Constants.ShowImageSegueIdentifier, sender: view)
+        } else if control == view.rightCalloutAccessoryView {
+            performSegue(withIdentifier: Constants.EditUserWaypoint, sender: view)
         }
     }
     
@@ -101,7 +111,7 @@ class GPXViewController: UIViewController, MKMapViewDelegate {
         // Drop the pin as soon as we recognise the gesture
         if sender.state == .began {
             let coordinate = mapView.convert(sender.location(in: mapView), toCoordinateFrom: mapView)
-            let waypoint = GPX.Waypoint(latitude: coordinate.latitude, longitude: coordinate.longitude)
+            let waypoint = EditableWaypoint(latitude: coordinate.latitude, longitude: coordinate.longitude)
             waypoint.name = "Dropped"
             mapView.addAnnotation(waypoint)
         }
