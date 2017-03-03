@@ -97,6 +97,15 @@ class GPXViewController: UIViewController, MKMapViewDelegate {
             mapView.delegate = self
         }
     }
+    @IBAction func addWaypoint(_ sender: UILongPressGestureRecognizer) {
+        // Drop the pin as soon as we recognise the gesture
+        if sender.state == .began {
+            let coordinate = mapView.convert(sender.location(in: mapView), toCoordinateFrom: mapView)
+            let waypoint = GPX.Waypoint(latitude: coordinate.latitude, longitude: coordinate.longitude)
+            waypoint.name = "Dropped"
+            mapView.addAnnotation(waypoint)
+        }
+    }
     
     // MARK: Constants
     
