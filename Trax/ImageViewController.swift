@@ -11,7 +11,7 @@ import UIKit
 class ImageViewController: UIViewController, UIScrollViewDelegate {
 
     // MARK: - Model
-    var imageURL: NSURL? {
+    var imageURL: URL? {
         didSet {
             image = nil
             // This is a pretty reliable way of checking if the view is on screen
@@ -50,7 +50,7 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
             scrollView.contentSize = imageView.frame.size
             scrollView.delegate = self
             scrollView.minimumZoomScale = 0.03
-            scrollView.maximumZoomScale = 1.0
+            scrollView.maximumZoomScale = 2.0
         }
     }
     
@@ -76,9 +76,6 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         scrollView.addSubview(imageView)
-        if imageURL == nil {
-            imageURL = NSURL(string: DemoURL.Stanford)
-        }
     }
     
     override func viewWillAppear(_ animated: Bool) {

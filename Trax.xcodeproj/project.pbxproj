@@ -63,6 +63,7 @@
 				A1643B181E69BB44005587B2 /* Supporting Files */,
 				A1643B081E69BA6E005587B2 /* GPXViewController.swift */,
 				A1643B191E69BDA2005587B2 /* GPX.swift */,
+				A1643B1D1E69CB7D005587B2 /* ImageViewController.swift */,
 				A1643B1B1E69C317005587B2 /* MKGPX.swift */,
 				A1643B0A1E69BA6E005587B2 /* Main.storyboard */,
 			);
@@ -72,7 +73,6 @@
 		A1643B181E69BB44005587B2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				A1643B1D1E69CB7D005587B2 /* ImageViewController.swift */,
 				A1643B061E69BA6E005587B2 /* AppDelegate.swift */,
 				A1643B0D1E69BA6E005587B2 /* Assets.xcassets */,
 				A1643B0F1E69BA6E005587B2 /* LaunchScreen.storyboard */,
