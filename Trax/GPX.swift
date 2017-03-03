@@ -83,7 +83,7 @@ class GPX: NSObject, XMLParserDelegate
         
         init(href: String) { self.href = href }
         
-        var url: NSURL? { return NSURL(string: href) }
+        var url: URL? { return URL(string: href) }
         var text: String? { return linkattributes["text"] }
         var type: String? { return linkattributes["type"] }
         

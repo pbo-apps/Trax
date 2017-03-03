@@ -18,4 +18,20 @@ extension GPX.Waypoint: MKAnnotation {
     
     var subtitle: String? { return info }
     
+    var thumbnailUrl: URL? {
+        return getImageUrl(of: "thumbnail")
+    }
+    
+    var imageUrl: URL? {
+        return getImageUrl(of: "large")
+    }
+    
+    private func getImageUrl(of type: String?) -> URL? {
+        for link in links {
+            if link.type == type {
+                return link.url
+            }
+        }
+        return nil
+    }
 }
