@@ -7,19 +7,44 @@
 //
 
 import UIKit
+import MapKit
 
-class GPXViewController: UIViewController {
+class GPXViewController: UIViewController, MKMapViewDelegate {
 
+    // MARK: - Model
+    var gpxUrl: URL? {
+        didSet {
+            clearWaypoints()
+            if let url = gpxUrl {
+                GPX.parse(url, completionHandler: { gpx in
+                    if gpx != nil {
+                        self.addWaypoints(gpx!.waypoints)
+                    }
+                })
+            }
+        }
+    }
+    
+    private func clearWaypoints() {
+        mapView?.removeAnnotations(mapView.annotations)
+    }
+    
+    private func addWaypoints(_ waypoints: [GPX.Waypoint]) {
+        mapView?.addAnnotations(waypoints)
+        mapView?.showAnnotations(waypoints, animated: true)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        gpxUrl = URL(string: "https://cs193p.stanford.edu/Vacation.gpx")
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    @IBOutlet weak var mapView: MKMapView! {
+        didSet {
+            mapView.mapType = .satellite
+            mapView.delegate = self
+        }
     }
-
 
 }
 

@@ -20,11 +20,26 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="kpx-RN-7rm">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            </mapView>
+                        </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="kpx-RN-7rm" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="CaE-68-HDF"/>
+                            <constraint firstAttribute="trailing" secondItem="kpx-RN-7rm" secondAttribute="trailing" id="RoF-ul-s2S"/>
+                            <constraint firstItem="kpx-RN-7rm" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="mEh-l2-ZBd"/>
+                            <constraint firstItem="kpx-RN-7rm" firstAttribute="bottom" secondItem="wfy-db-euE" secondAttribute="top" id="yCi-Ui-38d"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="mapView" destination="kpx-RN-7rm" id="iS3-7n-4UC"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="136.80000000000001" y="138.98050974512745"/>
         </scene>
     </scenes>
 </document>
