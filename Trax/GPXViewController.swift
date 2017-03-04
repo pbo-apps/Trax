@@ -134,6 +134,35 @@ class GPXViewController: UIViewController, MKMapViewDelegate, UIPopoverPresentat
         select(annotation: (popoverPresentationController.presentedViewController as? EditWaypointViewController)?.waypointToEdit)
     }
     
+    // The below would allow us to prevent adaptation to full-screen modal in horizontally compact environments
+    // We don't want this though because it looks bad in this case, so we DO want adaptation
+//    func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+//        return .none
+//    }
+    
+    // We instead use this lifecycle function to make the modal popup in a horizontally-compact environment show as over the top of the
+    // presenting MVC, instead of over "the void"
+    func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+        return traitCollection.horizontalSizeClass == .compact ? .overFullScreen : .none
+    }
+    
+    // This lets us provide the view controller we want to use when adapting. We can use this to create a navigation controller
+    // with the EditWaypointViewController in it (i.e. the one we're presenting
+    func presentationController(_ controller: UIPresentationController, viewControllerForAdaptivePresentationStyle style: UIModalPresentationStyle) -> UIViewController? {
+        switch style {
+        case .fullScreen, .overFullScreen:
+            let navCon = UINavigationController(rootViewController: controller.presentedViewController)
+            // Putting this view into the top of the navCon's view hierarchy allows us to blur everything behing it, making it clear that we're in modal despite being able to see through
+            let visualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+            visualEffectView.frame = navCon.view.bounds
+            visualEffectView.autoresizingMask = [.flexibleWidth,.flexibleHeight]
+            navCon.view.insertSubview(visualEffectView, at: 0)
+            return navCon
+        default:
+            return nil
+        }
+    }
+    
     @IBAction func addWaypoint(_ sender: UILongPressGestureRecognizer) {
         // Drop the pin as soon as we recognise the gesture
         if sender.state == .began {
