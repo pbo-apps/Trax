@@ -42,7 +42,7 @@
                     <connections>
                         <outlet property="mapView" destination="kpx-RN-7rm" id="iS3-7n-4UC"/>
                         <segue destination="t08-BF-ibe" kind="show" identifier="Show Image" id="gge-ba-abV"/>
-                        <segue destination="KKs-EN-zSs" kind="presentation" identifier="Edit Waypoint" id="wa9-M6-uiV"/>
+                        <segue destination="KKs-EN-zSs" kind="presentation" identifier="Edit Waypoint" modalPresentationStyle="formSheet" id="wa9-M6-uiV"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -121,7 +121,7 @@
                     <navigationItem key="navigationItem" id="qmE-Li-gdG">
                         <barButtonItem key="rightBarButtonItem" systemItem="done" id="ViZ-uq-dM6">
                             <connections>
-                                <action selector="done:" destination="7eA-Kq-Dyc" id="psB-MC-E4a"/>
+                                <segue destination="Hwg-LF-jtp" kind="unwind" unwindAction="updatedUserWaypointWith:" id="3mf-pI-xZr"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -131,6 +131,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nub-HC-iax" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="Hwg-LF-jtp" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="2856.8000000000002" y="-550.07496251874068"/>
         </scene>

@@ -62,9 +62,6 @@ class EditWaypointViewController: UIViewController, UITextFieldDelegate {
             }
         }
     }
-    @IBAction func done(_ sender: UIBarButtonItem) {
-        presentingViewController?.dismiss(animated: true, completion: nil)
-    }
     
     @IBOutlet weak var nameTextField: UITextField! { didSet { nameTextField.delegate = self } }
     @IBOutlet weak var infoTextField: UITextField! { didSet { infoTextField.delegate = self } }
