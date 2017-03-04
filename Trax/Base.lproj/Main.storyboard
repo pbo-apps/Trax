@@ -83,7 +83,7 @@
                                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Mgk-ns-EPR">
                                                 <rect key="frame" x="96" y="0.0" width="247" height="30"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" priority="250" constant="250" id="yC6-Ny-l0y"/>
+                                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="200" id="yC6-Ny-l0y"/>
                                                 </constraints>
                                                 <nil key="textColor"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
