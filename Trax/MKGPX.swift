@@ -8,6 +8,20 @@
 
 import MapKit
 
+// Add subclass which allows dragging of the waypoint (because we now have a setter for the coordinate)
+class EditableWaypoint: GPX.Waypoint {
+
+    override var coordinate: CLLocationCoordinate2D {
+        get {
+            return super.coordinate
+        }
+        set {
+            latitude = newValue.latitude
+            longitude = newValue.longitude
+        }
+    }
+}
+
 extension GPX.Waypoint: MKAnnotation {
     
     var coordinate: CLLocationCoordinate2D {

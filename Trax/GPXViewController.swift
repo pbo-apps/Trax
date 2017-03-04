@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 
-class GPXViewController: UIViewController, MKMapViewDelegate {
+class GPXViewController: UIViewController, MKMapViewDelegate, UIPopoverPresentationControllerDelegate {
 
     // MARK: - Model
     var gpxUrl: URL? {
@@ -44,12 +44,20 @@ class GPXViewController: UIViewController, MKMapViewDelegate {
         } else {
             view.annotation = annotation
         }
+        
+        view.isDraggable = annotation is EditableWaypoint
         view.leftCalloutAccessoryView = nil
+        view.rightCalloutAccessoryView = nil
+        
         if let waypoint = annotation as? GPX.Waypoint {
             if waypoint.thumbnailUrl != nil {
                 view.leftCalloutAccessoryView = UIButton(frame: Constants.LeftCalloutFram)
             }
+            if waypoint is EditableWaypoint {
+                view.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
+            }
         }
+        
         return view
     }
     
@@ -67,9 +75,52 @@ class GPXViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        if control == view.leftCalloutAccessoryView {
+            performSegue(withIdentifier: Constants.ShowImageSegueIdentifier, sender: view)
+        } else if control == view.rightCalloutAccessoryView {
+            mapView.deselectAnnotation(view.annotation, animated: true)
+            performSegue(withIdentifier: Constants.EditUserWaypointSegueIdentifier, sender: view)
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         gpxUrl = URL(string: "https://cs193p.stanford.edu/Vacation.gpx")
+    }
+    
+    private func select(annotation waypoint: GPX.Waypoint?) {
+        if waypoint != nil {
+            mapView.selectAnnotation(waypoint!, animated: true)
+        }
+    }
+    
+    // MARK: - Navigation
+    
+    @IBAction func updatedUserWaypoint(with segue: UIStoryboardSegue) {
+        select(annotation: (segue.source.contentVC as? EditWaypointViewController)?.waypointToEdit)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let destination = segue.destination.contentVC
+        let annotationView = sender as? MKAnnotationView
+        let waypoint = annotationView?.annotation as? GPX.Waypoint
+        
+        if segue.identifier == Constants.ShowImageSegueIdentifier {
+            if let ivc = destination as? ImageViewController {
+                ivc.imageURL = waypoint?.imageUrl
+                ivc.title = waypoint?.name
+            }
+        } else if segue.identifier == Constants.EditUserWaypointSegueIdentifier {
+            if let editableWaypoint = waypoint as? EditableWaypoint,
+                let ewvc = destination as? EditWaypointViewController {
+                if let ppc = ewvc.popoverPresentationController {
+                    ppc.sourceRect = annotationView!.frame
+                    ppc.delegate = self
+                }
+                ewvc.waypointToEdit = editableWaypoint
+            }
+        }
     }
     
     @IBOutlet weak var mapView: MKMapView! {
@@ -79,14 +130,67 @@ class GPXViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
+    func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
+        select(annotation: (popoverPresentationController.presentedViewController as? EditWaypointViewController)?.waypointToEdit)
+    }
+    
+    // The below would allow us to prevent adaptation to full-screen modal in horizontally compact environments
+    // We don't want this though because it looks bad in this case, so we DO want adaptation
+//    func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+//        return .none
+//    }
+    
+    // We instead use this lifecycle function to make the modal popup in a horizontally-compact environment show as over the top of the
+    // presenting MVC, instead of over "the void"
+    func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+        return traitCollection.horizontalSizeClass == .compact ? .overFullScreen : .none
+    }
+    
+    // This lets us provide the view controller we want to use when adapting. We can use this to create a navigation controller
+    // with the EditWaypointViewController in it (i.e. the one we're presenting
+    func presentationController(_ controller: UIPresentationController, viewControllerForAdaptivePresentationStyle style: UIModalPresentationStyle) -> UIViewController? {
+        switch style {
+        case .fullScreen, .overFullScreen:
+            let navCon = UINavigationController(rootViewController: controller.presentedViewController)
+            // Putting this view into the top of the navCon's view hierarchy allows us to blur everything behing it, making it clear that we're in modal despite being able to see through
+            let visualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+            visualEffectView.frame = navCon.view.bounds
+            visualEffectView.autoresizingMask = [.flexibleWidth,.flexibleHeight]
+            navCon.view.insertSubview(visualEffectView, at: 0)
+            return navCon
+        default:
+            return nil
+        }
+    }
+    
+    @IBAction func addWaypoint(_ sender: UILongPressGestureRecognizer) {
+        // Drop the pin as soon as we recognise the gesture
+        if sender.state == .began {
+            let coordinate = mapView.convert(sender.location(in: mapView), toCoordinateFrom: mapView)
+            let waypoint = EditableWaypoint(latitude: coordinate.latitude, longitude: coordinate.longitude)
+            waypoint.name = "Dropped"
+            mapView.addAnnotation(waypoint)
+        }
+    }
+    
     // MARK: Constants
     
     private struct Constants {
         static let LeftCalloutFram = CGRect(x: 0, y: 0, width: 59, height: 59)
         static let AnnotationViewReuseIdentifier = "Waypoint"
         static let ShowImageSegueIdentifier = "Show Image"
-        static let EditUserWaypoint = "Edit Waypoint"
+        static let EditUserWaypointSegueIdentifier = "Edit Waypoint"
     }
 
+}
+
+extension UIViewController {
+    var contentVC: UIViewController {
+        if let navCon = self as? UINavigationController {
+            return navCon.visibleViewController ?? navCon
+        } else {
+            return self
+        }
+    }
 }
 
